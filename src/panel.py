@@ -3,7 +3,7 @@
 import bpy.types
 
 
-class Material_PT_DesignPanel(bpy.types.Panel):
+class MATERIAL_PT_DesignPanel(bpy.types.Panel):
     bl_label = "Design"
     bl_idname = "MATERIAL_PT_DesignPanel"
     bl_space_type = "PROPERTIES"
@@ -24,3 +24,6 @@ class Material_PT_DesignPanel(bpy.types.Panel):
 
         row = layout.row()
         row.prop(td_context, "user_request")
+
+        row = layout.row()
+        row.operator("td.create")

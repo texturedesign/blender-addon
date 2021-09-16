@@ -14,36 +14,38 @@ bl_info = {
     "category": "Import",
 }
 
+import bpy.utils
+import bpy.types
+
+
+from .context import TextureProperties
+from .operators import OBJECT_OT_CreateMaterial, OBJECT_OT_ScanLocalDirectory
+from .preferences import TexturePreferences
+from .panel import MATERIAL_PT_DesignPanel
+
+CLASSES = [
+    TextureProperties,
+    OBJECT_OT_CreateMaterial,
+    OBJECT_OT_ScanLocalDirectory,
+    TexturePreferences,
+    MATERIAL_PT_DesignPanel,
+]
+
 
 def register():
-    import bpy.utils
-    from bpy.types import WindowManager
     from bpy.props import PointerProperty
 
-    from .context import TextureProperties
-    from .preferences import TexturePreferences
-    from .panel import Material_PT_DesignPanel
+    for cls in CLASSES:
+        bpy.utils.register_class(cls)
 
-    bpy.utils.register_class(TexturePreferences)
-    bpy.utils.register_class(TextureProperties)
-    bpy.utils.register_class(Material_PT_DesignPanel)
-
-    WindowManager.td_context = PointerProperty(type=TextureProperties)
+    bpy.types.WindowManager.td_context = PointerProperty(type=TextureProperties)
 
 
 def unregister():
-    import bpy.utils
-    from bpy.types import WindowManager
+    del bpy.types.WindowManager.td_context
 
-    del WindowManager.td_context
-
-    from .context import TextureProperties
-    from .preferences import TexturePreferences
-    from .panel import Material_PT_DesignPanel
-
-    bpy.utils.unregister_class(Material_PT_DesignPanel)
-    bpy.utils.register_class(TextureProperties)
-    bpy.utils.unregister_class(TexturePreferences)
+    for cls in reversed(CLASSES):
+        bpy.utils.unregister_class(cls)
 
 
 if __name__ == "__main__":
