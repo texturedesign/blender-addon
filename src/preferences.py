@@ -4,7 +4,7 @@ import bpy.types
 import bpy.props
 
 
-class AddonPreferences(bpy.types.AddonPreferences):
+class TexturePreferences(bpy.types.AddonPreferences):
     bl_idname = "texturedesign"
 
     local_path: bpy.props.StringProperty(

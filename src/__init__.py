@@ -18,44 +18,32 @@ bl_info = {
 def register():
     import bpy.utils
     from bpy.types import WindowManager
-    from bpy.props import EnumProperty, BoolProperty, FloatProperty
-    from .preferences import AddonPreferences
+    from bpy.props import PointerProperty
 
-    WindowManager.td_resolution = EnumProperty(
-        name = "Resolution",
-        items = [
-            ("1k", "1k", "1k", 1),
-            ("2k", "2k", "2k", 2),
-        ],
-        # update = changeResolution,
-    )
+    from .context import TextureProperties
+    from .preferences import TexturePreferences
+    from .panel import Material_PT_DesignPanel
 
-    WindowManager.td_isDownloading = BoolProperty(
-        default = False,
-    )
+    bpy.utils.register_class(TexturePreferences)
+    bpy.utils.register_class(TextureProperties)
+    bpy.utils.register_class(Material_PT_DesignPanel)
 
-    WindowManager.td_DownloadProcess= FloatProperty(
-        default = 0,
-        min = 0.0,
-        max = 100.0,
-        soft_min = 0.0,
-        soft_max = 100.0,
-        name = "Downloading..."
-    )
-
-    bpy.utils.register_class(AddonPreferences)
+    WindowManager.td_context = PointerProperty(type=TextureProperties)
 
 
 def unregister():
     import bpy.utils
     from bpy.types import WindowManager
-    from .preferences import AddonPreferences
 
-    del WindowManager.td_isDownloading
-    del WindowManager.td_DownloadProcess
-    del WindowManager.td_resolution
+    del WindowManager.td_context
 
-    bpy.utils.unregister_class(AddonPreferences)
+    from .context import TextureProperties
+    from .preferences import TexturePreferences
+    from .panel import Material_PT_DesignPanel
+
+    bpy.utils.unregister_class(Material_PT_DesignPanel)
+    bpy.utils.register_class(TextureProperties)
+    bpy.utils.unregister_class(TexturePreferences)
 
 
 if __name__ == "__main__":
