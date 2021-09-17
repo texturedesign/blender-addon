@@ -20,10 +20,10 @@ class MATERIAL_PT_DesignPanel(bpy.types.Panel):
         td_context = context.window_manager.td_context
 
         row = layout.row()
-        row.label(text="Describe a material in your words.")
+        row.label(text="Enter the full path to the material.")
 
         row = layout.row()
-        row.prop(td_context, "user_request")
+        row.prop(td_context, "material_path")
 
         row = layout.row()
         row.operator("td.create")

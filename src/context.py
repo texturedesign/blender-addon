@@ -14,3 +14,9 @@ class TextureProperties(bpy.types.PropertyGroup):
         description="Describe your material with words.",
         default=""
     )
+
+    material_path: bpy.props.StringProperty(
+        name="Path",
+        description="Location from which to load materials.",
+        default=""
+    )
