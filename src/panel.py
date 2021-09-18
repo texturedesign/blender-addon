@@ -20,10 +20,20 @@ class MATERIAL_PT_DesignPanel(bpy.types.Panel):
         td_context = context.window_manager.td_context
 
         row = layout.row()
-        row.label(text="Enter the full path to the material.")
+        row.label(text="Browse path for material.")
 
         row = layout.row()
         row.prop(td_context, "material_path")
 
         row = layout.row()
-        row.operator("td.create")
+        row.operator("td.create_from_path")
+
+        layout.separator()
+        row = layout.row()
+        row.label(text="Enter UUID of a material.")
+
+        row = layout.row()
+        row.prop(td_context, "material_uuid")
+
+        row = layout.row()
+        row.operator("td.create_from_uuid")

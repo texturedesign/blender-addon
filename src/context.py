@@ -9,14 +9,21 @@ class TextureProperties(bpy.types.PropertyGroup):
     `context.window_manager`.
     """
 
-    user_request: bpy.props.StringProperty(
+    material_brief: bpy.props.StringProperty(
         name="Brief",
-        description="Describe your material with words.",
+        description="Describe your material with words",
         default=""
     )
 
     material_path: bpy.props.StringProperty(
         name="Path",
-        description="Location from which to load materials.",
+        description="Location from which to load material",
+        subtype="DIR_PATH",
+        default=""
+    )
+
+    material_uuid: bpy.props.StringProperty(
+        name="UUID",
+        description="UUID of material to load",
         default=""
     )

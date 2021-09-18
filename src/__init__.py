@@ -19,13 +19,18 @@ import bpy.types
 
 
 from .context import TextureProperties
-from .operators import OBJECT_OT_CreateMaterial, OBJECT_OT_ScanLocalDirectory
+from .operators import (
+    OBJECT_OT_CreateMaterialFromPath,
+    OBJECT_OT_CreateMaterialFromUUID,
+    OBJECT_OT_ScanLocalDirectory
+)
 from .preferences import TexturePreferences
 from .panel import MATERIAL_PT_DesignPanel
 
 CLASSES = [
     TextureProperties,
-    OBJECT_OT_CreateMaterial,
+    OBJECT_OT_CreateMaterialFromPath,
+    OBJECT_OT_CreateMaterialFromUUID,
     OBJECT_OT_ScanLocalDirectory,
     TexturePreferences,
     MATERIAL_PT_DesignPanel,
