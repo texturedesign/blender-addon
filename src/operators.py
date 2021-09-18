@@ -141,3 +141,16 @@ class OBJECT_OT_CreateMaterialFromUUID(bpy.types.Operator):
 
         create_material(mat_path)
         return {"FINISHED"}
+
+
+class OBJECT_OT_CreateMaterialFromBrief(bpy.types.Operator):
+
+    bl_idname = "td.create_from_brief"
+    bl_label = "Create Material From Brief"
+    bl_description = "Create a new material based on a description."
+
+    def execute(self, context):
+        td_context = context.window_manager.td_context
+        td_context.material_uuid = "AHA5jXjDtLLxnkPedCCK1N"
+        bpy.ops.td.create_from_uuid('EXEC_DEFAULT')
+        return {"FINISHED"}

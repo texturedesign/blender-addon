@@ -20,6 +20,7 @@ import bpy.types
 
 from .context import TextureProperties
 from .operators import (
+    OBJECT_OT_CreateMaterialFromBrief,
     OBJECT_OT_CreateMaterialFromPath,
     OBJECT_OT_CreateMaterialFromUUID,
     OBJECT_OT_ScanLocalDirectory
@@ -29,6 +30,7 @@ from .panel import MATERIAL_PT_DesignPanel
 
 CLASSES = [
     TextureProperties,
+    OBJECT_OT_CreateMaterialFromBrief,
     OBJECT_OT_CreateMaterialFromPath,
     OBJECT_OT_CreateMaterialFromUUID,
     OBJECT_OT_ScanLocalDirectory,

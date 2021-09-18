@@ -20,13 +20,13 @@ class MATERIAL_PT_DesignPanel(bpy.types.Panel):
         td_context = context.window_manager.td_context
 
         row = layout.row()
-        row.label(text="Browse path for material.")
+        row.label(text="Describe your material with words.")
 
         row = layout.row()
-        row.prop(td_context, "material_path")
+        row.prop(td_context, "material_brief")
 
         row = layout.row()
-        row.operator("td.create_from_path")
+        row.operator("td.create_from_brief")
 
         layout.separator()
         row = layout.row()
@@ -37,3 +37,13 @@ class MATERIAL_PT_DesignPanel(bpy.types.Panel):
 
         row = layout.row()
         row.operator("td.create_from_uuid")
+
+        layout.separator()
+        row = layout.row()
+        row.label(text="Browse path for material.")
+
+        row = layout.row()
+        row.prop(td_context, "material_path")
+
+        row = layout.row()
+        row.operator("td.create_from_path")
