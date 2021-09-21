@@ -2,6 +2,8 @@
 
 import io
 import os
+import json
+import random
 import zipfile
 from urllib.request import urlopen
 
@@ -143,6 +145,16 @@ class OBJECT_OT_CreateMaterialFromUUID(bpy.types.Operator):
         return {"FINISHED"}
 
 
+INDEX = None
+
+def download_index():
+    global INDEX
+    if INDEX is not None:
+        return
+    data = urlopen("https://texture.design/tools/cache/index.json").read()
+    INDEX = json.loads(data)
+
+
 class OBJECT_OT_CreateMaterialFromBrief(bpy.types.Operator):
 
     bl_idname = "td.create_from_brief"
@@ -150,7 +162,15 @@ class OBJECT_OT_CreateMaterialFromBrief(bpy.types.Operator):
     bl_description = "Create a new material based on a description."
 
     def execute(self, context):
+        download_index()
+
         td_context = context.window_manager.td_context
-        td_context.material_uuid = "AHA5jXjDtLLxnkPedCCK1N"
+        brief = td_context.material_brief.strip("\t ").lower()
+
+        options = [m['uuid'] for m in INDEX if brief in m['tags']]
+        if len(options) == 0:
+            return {"FAILED"}
+
+        td_context.material_uuid = random.choice(options)
         bpy.ops.td.create_from_uuid('EXEC_DEFAULT')
         return {"FINISHED"}
