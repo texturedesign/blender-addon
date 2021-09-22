@@ -6,7 +6,7 @@ import bpy.props
 
 
 class TexturePreferences(bpy.types.AddonPreferences):
-    bl_idname = "texturedesign"
+    bl_idname = "td-addon"
 
     material_path: bpy.props.StringProperty(
         description = "Material Path",
