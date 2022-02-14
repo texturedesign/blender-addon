@@ -2,6 +2,7 @@
 
 import io
 import os
+import ssl
 import json
 import random
 import zipfile
@@ -116,7 +117,11 @@ def download_material(root_path, material_uuid):
     if os.path.isdir(target_dir):
         return
 
-    response = urlopen(f"https://dl.texture.design/v2/{material_uuid}/4K-JPG.zip")
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+
+    response = urlopen(f"https://dl.texture.design/v2/{material_uuid}/4K-JPG.zip", context=ctx)
     archive = zipfile.ZipFile(io.BytesIO(response.read()))
 
     archive.extractall(tmp_dir)
