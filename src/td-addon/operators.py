@@ -156,7 +156,12 @@ def download_index():
     global INDEX
     if INDEX is not None:
         return
-    data = urlopen("https://texture.design/tools/cache/index.json").read()
+
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+
+    data = urlopen("https://texture.design/tools/cache/index.json", context=ctx).read()
     INDEX = json.loads(data)
 
 
