@@ -6,8 +6,9 @@ import bpy.types
 class MATERIAL_PT_DesignPanel(bpy.types.Panel):
     bl_label = "Design"
     bl_idname = "MATERIAL_PT_DesignPanel"
-    bl_space_type = "PROPERTIES"
-    bl_region_type = "WINDOW"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "TOOLS"
+    bl_category = "Create"
     bl_context = "material"
     bl_options = {'DEFAULT_CLOSED'}
 
