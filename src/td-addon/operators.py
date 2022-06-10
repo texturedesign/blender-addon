@@ -11,8 +11,6 @@ from urllib.request import urlopen
 import bpy
 import bpy.types
 
-
-
 class OBJECT_OT_ScanLocalDirectory(bpy.types.Operator):
 
     bl_idname = "td.scan"
@@ -42,9 +40,10 @@ def create_material(base_path, name="Material_4K"):
 
     principle_node = material.node_tree.nodes["Principled BSDF"]
     output_node = material.node_tree.nodes["Material Output"]
+    output_node.location = (600,300)
 
     occlusion_node = material.node_tree.nodes.new("ShaderNodeTexImage")
-    occlusion_node.location = (-1080, 400)
+    occlusion_node.location = (-680, 660)
     occlusion_node.image = loadImageCached(os.path.join(base_path, "occlusion.jpg"), "sRGB", 1.0)
     occlusion_node.name = "Ambient Occlusion"
 
@@ -54,27 +53,28 @@ def create_material(base_path, name="Material_4K"):
     albedo_node.name = "Diffuse Color"
 
     displacement_node = material.node_tree.nodes.new("ShaderNodeTexImage")
-    displacement_node.location = (20, -388)
-    displacement_node.image = loadImageCached(os.path.join(base_path, "displacement.jpg"), default=0.5)
+    displacement_node.location = (-343, -660)
+    displacement_node.image = loadImageCached(os.path.join(base_path, "displacement.jpg"), "Non-Color", default=0.5)
     displacement_node.name = "Displacement"
 
     normal_node = material.node_tree.nodes.new("ShaderNodeTexImage")
     normal_node.location = (-680, -388)
-    normal_node.image = loadImageCached(os.path.join(base_path, "normal.jpg"))
+    normal_node.image = loadImageCached(os.path.join(base_path, "normal.jpg"), "Non-Color")
     normal_node.name = "Normal"
 
     roughness_node = material.node_tree.nodes.new("ShaderNodeTexImage")
     roughness_node.location = (-680, -130)
-    roughness_node.image = loadImageCached(os.path.join(base_path, "roughness.jpg"), default=0.5)
+    roughness_node.image = loadImageCached(os.path.join(base_path, "roughness.jpg"), "Non-Color", default=0.5)
     roughness_node.name = "Roughness"
+
 
     specular_node = material.node_tree.nodes.new("ShaderNodeTexImage")
     specular_node.location = (-680, 135)
     specular_node.name = "Specularity"
-    specular_node.image = loadImageCached(os.path.join(base_path, "specular.jpg"), default=0.0)
+    specular_node.image = loadImageCached(os.path.join(base_path, "specular.jpg"), "Non-Color", default=0.0)
 
-    valToRGB_node = material.node_tree.nodes.new("ShaderNodeValToRGB")
-    valToRGB_node.location = (-680, 627)
+    # valToRGB_node = material.node_tree.nodes.new("ShaderNodeValToRGB")
+    # valToRGB_node.location = (-680, 627)
 
     mixRGB_node = material.node_tree.nodes.new("ShaderNodeMixRGB")
     mixRGB_node.location = (-343, 559)
@@ -82,20 +82,44 @@ def create_material(base_path, name="Material_4K"):
     mixRGB_node.inputs[0].default_value = 1.0
 
     normalMap_node = material.node_tree.nodes.new("ShaderNodeNormalMap")
-    normalMap_node.location = (-327, -262)
+    normalMap_node.location = (-343, -262)
 
-    material.node_tree.links.new(occlusion_node.outputs[0], valToRGB_node.inputs[0])
-    material.node_tree.links.new(valToRGB_node.outputs[0], mixRGB_node.inputs[2])
+    texcoord_node = material.node_tree.nodes.new("ShaderNodeTexCoord")
+    texcoord_node.location = (-1500, 660)
+
+    mapping_node = material.node_tree.nodes.new("ShaderNodeMapping")
+    mapping_node.location = (-1300, 660)
+    mapping_node.inputs[3].default_value[0] = 2.0
+    mapping_node.inputs[3].default_value[1] = 2.0
+    mapping_node.inputs[3].default_value[2] = 2.0
+
+    displacement_module = material.node_tree.nodes.new("ShaderNodeDisplacement")
+    displacement_module.location = (0, -660)
+    #uv into vector
+    material.node_tree.links.new(texcoord_node.outputs[2], mapping_node.inputs[0])
+    #vector into textures
+    material.node_tree.links.new(mapping_node.outputs[0], occlusion_node.inputs[0])
+    material.node_tree.links.new(mapping_node.outputs[0], specular_node.inputs[0])
+    material.node_tree.links.new(mapping_node.outputs[0], normal_node.inputs[0])
+    material.node_tree.links.new(mapping_node.outputs[0], roughness_node.inputs[0])
+    material.node_tree.links.new(mapping_node.outputs[0], displacement_node.inputs[0])
+    material.node_tree.links.new(mapping_node.outputs[0], albedo_node.inputs[0])
+    # material.node_tree.links.new(valToRGB_node.outputs[0], mixRGB_node.inputs[2])
     material.node_tree.links.new(albedo_node.outputs[0], mixRGB_node.inputs[1])
+    material.node_tree.links.new(occlusion_node.outputs[0], mixRGB_node.inputs[2])
     material.node_tree.links.new(mixRGB_node.outputs[0], principle_node.inputs[0])
     material.node_tree.links.new(specular_node.outputs[0], principle_node.inputs[7])
     material.node_tree.links.new(roughness_node.outputs[0], principle_node.inputs[9])
     material.node_tree.links.new(normal_node.outputs[0], normalMap_node.inputs[1])
     material.node_tree.links.new(normalMap_node.outputs[0], principle_node.inputs[22])
-    material.node_tree.links.new(displacement_node.outputs[0], output_node.inputs[2])
+    material.node_tree.links.new(displacement_node.outputs[0], displacement_module.inputs[0])
+    material.node_tree.links.new(displacement_module.outputs[0], output_node.inputs[2])
+    # bpy.context.object.material_slots.material = material
+    selected_objs = bpy.context.selected_objects
 
-    bpy.context.object.material_slots[0].material = material
-
+    for obj in selected_objs:
+        create_material(base_path)
+        obj.data.materials.append(material)
 
 class OBJECT_OT_CreateMaterialFromPath(bpy.types.Operator):
 
@@ -107,6 +131,7 @@ class OBJECT_OT_CreateMaterialFromPath(bpy.types.Operator):
         td_context = context.window_manager.td_context
         base_path = td_context.material_path
         create_material(base_path)
+
         return {"FINISHED"}
 
 
