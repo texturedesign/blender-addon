@@ -7,10 +7,10 @@ class MATERIAL_PT_DesignPanel(bpy.types.Panel):
     bl_label = "Design"
     bl_idname = "MATERIAL_PT_DesignPanel"
     bl_space_type = "VIEW_3D"
-    bl_region_type = "TOOLS"
+    bl_region_type = "UI"
     bl_category = "Create"
-    bl_context = "material"
-    bl_options = {'DEFAULT_CLOSED'}
+    bl_context = "objectmode"
+    bl_options = {"HEADER_LAYOUT_EXPAND"}
 
     @classmethod
     def poll(self, context):
