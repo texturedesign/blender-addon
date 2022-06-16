@@ -114,12 +114,7 @@ def create_material(base_path, name="Material_4K"):
     material.node_tree.links.new(normalMap_node.outputs[0], principle_node.inputs[22])
     material.node_tree.links.new(displacement_node.outputs[0], displacement_module.inputs[0])
     material.node_tree.links.new(displacement_module.outputs[0], output_node.inputs[2])
-    # bpy.context.object.material_slots.material = material
-    selected_objs = bpy.context.selected_objects
-
-    for obj in selected_objs:
-        create_material(base_path)
-        obj.data.materials.append(material)
+    bpy.context.object.material_slots[0].material = material
 
 class OBJECT_OT_CreateMaterialFromPath(bpy.types.Operator):
 
@@ -128,11 +123,14 @@ class OBJECT_OT_CreateMaterialFromPath(bpy.types.Operator):
     bl_description = "Create a new material from specified path."
 
     def execute(self, context):
+        selected_obj = bpy.context.active_object
+
         td_context = context.window_manager.td_context
         base_path = td_context.material_path
-        create_material(base_path)
-
-        return {"FINISHED"}
+        for obj in len(selected_obj):
+            create_material(base_path)
+            obj.data.materials.append(material)
+            return {"FINISHED"}
 
 
 def download_material(root_path, material_uuid):
